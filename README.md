@@ -1,4 +1,4 @@
-# UD-CDKD: minimal core release
+# UD-CDKD:core release
 
 This repository contains only the core implementation required to understand and reproduce the main UD-CDKD experiments described in the manuscript. Development history, duplicate scripts, notebooks, visualisation utilities, logs, intermediate checkpoints, unit tests and separate ablation configuration files are intentionally excluded.
 
