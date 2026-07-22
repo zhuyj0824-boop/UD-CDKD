@@ -1,0 +1,64 @@
+experiment:
+  name: ud_cdkd_25pct
+  seed: 101
+  deterministic: false
+  output_dir: outputs/ud_cdkd_25pct
+
+data:
+  root: /path/to/fault_dataset
+  train_split: train
+  val_split: val
+  label_ratio: 0.25
+  patch_size: [128, 128, 128]
+  axis_order: DHW
+  slice_axis: -1
+  augmentation:
+    flip_probability: 0.5
+    rotation_probability: 0.5
+    noise_std: 0.05
+
+models:
+  branch_2d:
+    model_name: nvidia/segformer-b2-finetuned-ade-512-512
+    pretrained: true
+    lora_rank: 64
+    lora_alpha: 64
+    lora_dropout: 0.1
+  branch_3d:
+    base_channels: 32
+
+training:
+  warmup_epochs: 1000
+  distillation_epochs: 3000
+  batch_size: 4
+  num_workers: 4
+  slice_chunk_size: 32
+  learning_rate_2d: 0.001
+  learning_rate_3d: 0.0001
+  weight_decay: 0.0001
+  supervised_consistency_weight: 1.0
+  mixed_precision: true
+  gradient_clip_norm: 5.0
+  validation_interval: 50
+  checkpoint_interval: 50
+
+distillation:
+  strategy: stability_guided
+  prediction_ema_momentum: 0.9
+  statistics_momentum: 0.9
+  confidence_threshold_2d: 0.7
+  confidence_threshold_3d: 0.8
+  save_prediction_ema: false
+
+ducl:
+  eta: 5.0
+  tau: 0.5
+  beta0: 0.1
+  delta0: 0.5
+  uncertainty_weighting: true
+  entropy_regularisation: true
+  dynamic_scheduling: true
+
+inference:
+  overlap: 0.5
+  sliding_window_batch_size: 1
